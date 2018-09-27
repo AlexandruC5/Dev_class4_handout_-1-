@@ -56,7 +56,8 @@ bool j1Map::Load(const char* file_name)
 	bool ret = true;
 	p2SString tmp("%s%s", folder.GetString(), file_name);
 
-	pugi::xml_parse_result result = map_file.load_file(tmp.GetString());
+	pugi::xml_parse_result result = map_file.load_file("maps/hello2.tmx");
+	
 
 	if(result == NULL)
 	{
@@ -68,6 +69,7 @@ bool j1Map::Load(const char* file_name)
 	{
 		// TODO 3: Create and call a private function to load and fill
 		// all your map data
+		LoadMap(map_file);
 		
 	}
 
@@ -87,13 +89,13 @@ bool j1Map::Load(const char* file_name)
 }
 
 
-bool j1Map::LoadMap(const char* file_name)
+bool j1Map::LoadMap(pugi::xml_document& map_file)
 {
 	MapNode MapInfo;
 
-	MapInfo.height = map_file.attribute("height").value;
-	MapInfo.width = map_file.attribute("width").value;
-	MapInfo.orientation = map_file.attribute("height").as_string;
+	MapInfo.height = map_file.attribute("height").as_int();
+	MapInfo.width = map_file.attribute("width").as_int();
+	//MapInfo.orientation = map_file.attribute("orientation").as_string();
 
 	
 

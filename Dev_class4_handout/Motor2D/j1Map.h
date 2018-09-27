@@ -48,7 +48,7 @@ public:
 private:
 
 
-	bool LoadMap(const char* path);
+	bool LoadMap(pugi::xml_document& map_file);
 
 public:
 	struct MapNode;
@@ -80,6 +80,7 @@ public:
 private:
 
 	pugi::xml_document	map_file;
+	pugi::xml_document tilset_file;
 
 	
 
