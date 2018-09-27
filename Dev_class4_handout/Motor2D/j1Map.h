@@ -14,14 +14,49 @@
 // TODO 1: Create a struct needed to hold the information to Map node
 
 enum map_orientantion {
-	right_down,
-	right_up,
-	left_down,
-	left_up,
+	orthogonal,
+	isometric,
 	error
 
 };
 
+enum class map_render_order
+{
+	right_up,
+	right_down,
+	left_up,
+	left_down,
+	error
+};
+
+struct MapInfo {
+
+	p2SString file_path = "";
+
+	uint width = 0;
+	uint height = 0;
+	uint tile_width = 0;
+	uint tile_height = 0;
+	uint nextobjectid = 0;
+
+	map_orientantion orientation = map_orientantion::error;
+	map_render_order render_order = map_render_order::error;
+};
+
+struct TileSet {
+
+	p2SString image_path = "";
+
+	uint FirstGID = 0;
+
+	p2SString name = "";
+
+	uint TilleWidth = 0;
+	uint TilleHeight = 0;
+	uint spacing = 0;
+	uint magine = 0;
+
+};
 
 // ----------------------------------------------------
 class j1Map : public j1Module
@@ -48,39 +83,26 @@ public:
 private:
 
 
-	bool LoadMap(pugi::xml_document& map_file);
+	bool LoadMap();
+	bool LoadTile();
+
 
 public:
-	struct MapNode;
-	struct TileSet;
-
+struct TileSet;
+	
 	pugi::xml_document Map;
 
 	// TODO 1: Add your struct for map info as public for now
 
-	struct MapNode {
+	MapInfo info;
+	p2List<TileSet> tileset;
+	p2List<SDL_Texture*> tileset_texture;
 
-
-		uint width = 0;
-		uint height = 0;
-
-		map_orientantion orientation = map_orientantion::error;
-	};
-
-	struct TileSet {
-
-		int FirstGID = 0;
-		uint TilleWidth = 0;
-		uint TilleHeight = 0;
-		uint spacing = 0;
-		uint magine = 0;
-
-	};
 
 private:
 
 	pugi::xml_document	map_file;
-	pugi::xml_document tilset_file;
+	
 
 	
 

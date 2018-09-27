@@ -91,14 +91,41 @@ bool j1Map::Load(const char* file_name)
 
 bool j1Map::LoadMap(pugi::xml_document& map_file)
 {
-	MapNode MapInfo;
+	bool ret = true;
 
-	MapInfo.height = map_file.attribute("height").as_int();
-	MapInfo.width = map_file.attribute("width").as_int();
-	//MapInfo.orientation = map_file.attribute("orientation").as_string();
+	pugi::xml_node map_node = map_file.child("map");
+	
+	info.width = map_node.attribute("width").as_uint();
+	info.height = map_node.attribute("height").as_uint();
+	info.tile_width = map_node.attribute("tilewidth").as_uint();
+	info.tile_height = map_node.attribute("tileheight").as_uint();
+	info.nextobjectid = map_node.attribute("nextobjectid").as_uint();
 
 	
 
-	return false;
+	LOG("width: %i height: %i \n tile_width: %i tile_height: %i", info.width, info.height, info.tile_width, info.tile_height);
+
+
+	p2SString orientation(map_node.attribute("orientation").as_string);
+	if (orientation == "orthogonal") info.orientation = map_orientantion::orthogonal;
+	if (orientation == "isometric") info.orientation = map_orientantion::isometric;
+
+	p2SString render_order(map_node.attribute("renderorder").as_string());
+	if (render_order == "right-up") info.render_order = map_render_order::right_up;
+	else if (render_order == "right-down") info.render_order = map_render_order::right_down;
+	else if (render_order == "left-up") info.render_order = map_render_order::left_up;
+	else if (render_order == "left-down") info.render_order = map_render_order::left_down;
+
+	return ret;
+}
+
+bool j1Map::LoadTile() {
+
+	for (pugi::xml_node tileset = map_file.child("mapa").child("tileset"); tileset; tileset = tileset.next_sibling("tileset")) {
+
+		TileSet info;
+
+	}
+
 }
 
