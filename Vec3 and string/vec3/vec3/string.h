@@ -1,13 +1,14 @@
 #ifndef string_h
 #define string_h
+#include <assert.h>
 //Alexandru Cercel Mihai
 class String {
 private:
-	int length;
-	char *string;
+	unsigned int length = 0u;
+	char *string = nullptr;
 
 
-	void Allocate(int size) 
+	void Allocate(unsigned int size) 
 	{
 		length = size;
 		string = new char[length];
@@ -20,22 +21,37 @@ private:
 
 public:
 
+
+	~String()
+	{
+
+		if (string != nullptr) 
+		{	
+		delete[] string;
+		string = nullptr;
+		Allocate(0);
+
+		}
+	}
+
 	String()
 	{
-		Allocate(1);
+		Allocate(10);
 	}
 	String(const char* string)
 	{
+		assert(string);
 		if (string != nullptr) {
 			Allocate(CalLength(string));
 			Copy(string);
 		}
 		else {
-			Allocate(1);
+			Allocate(10);
 		}
 	}
 	String(const String& string)
 	{
+		
 		if (string.GetString() != nullptr)
 		{
 			Allocate(string.length);
