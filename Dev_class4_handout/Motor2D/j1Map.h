@@ -6,56 +6,76 @@
 #include "p2Point.h"
 #include "j1Module.h"
 
-// TODO 2: Create a struct to hold information for a TileSet
-// Ignore Terrain Types and Tile Types for now, but we want the image!
+// TODO 1: Create a struct for the map layer
 // ----------------------------------------------------
 
-
-// TODO 1: Create a struct needed to hold the information to Map node
-
-enum map_orientantion {
-	orthogonal,
-	isometric,
-	error
-
-};
-
-enum class map_render_order
+struct MapLayer  
 {
-	right_up,
-	right_down,
-	left_up,
-	left_down,
-	error
+
+	p2SString	name="";
+	uint width=0;
+	uint height=0;
+	uint* tiles=nullptr;
+
+	
+		
+
+	~MapLayer()
+	{
+		if (tiles != nullptr) {
+			delete[] tiles;
+		}
+	}
+	uint Get(int x, int y) const {
+		return x + (width*y);
+	}
 };
 
-struct MapInfo {
+	// TODO 6: Short function to get the value of x,y
 
-	p2SString file_path = "";
 
-	uint width = 0;
-	uint height = 0;
-	uint tile_width = 0;
-	uint tile_height = 0;
-	uint nextobjectid = 0;
 
-	map_orientantion orientation = map_orientantion::error;
-	map_render_order render_order = map_render_order::error;
+
+// ----------------------------------------------------
+struct TileSet
+{
+	// TODO 7: Create a method that receives a tile id and returns it's Rectfind the Rect associated with a specific tile id
+	SDL_Rect GetTileRect(int id) const;
+
+	p2SString			name;
+	int					firstgid;
+	int					margin;
+	int					spacing;
+	int					tile_width;
+	int					tile_height;
+	SDL_Texture*		texture;
+	int					tex_width;
+	int					tex_height;
+	int					num_tiles_width;
+	int					num_tiles_height;
+	int					offset_x;
+	int					offset_y;
 };
 
-struct TileSet {
-
-	p2SString image_path = "";
-
-	uint FirstGID = 0;
-
-	p2SString name = "";
-
-	uint TilleWidth = 0;
-	uint TilleHeight = 0;
-	uint spacing = 0;
-	uint magine = 0;
-
+enum MapTypes
+{
+	MAPTYPE_UNKNOWN = 0,
+	MAPTYPE_ORTHOGONAL,
+	MAPTYPE_ISOMETRIC,
+	MAPTYPE_STAGGERED
+};
+// ----------------------------------------------------
+struct MapData
+{
+	int					width;
+	int					height;
+	int					tile_width;
+	int					tile_height;
+	SDL_Color			background_color;
+	MapTypes			type;
+	p2List<TileSet*>	tilesets;
+	p2List<MapLayer*>	maplayers;
+	// TODO 2: Add a list/array of layers to the map!
 };
 
 // ----------------------------------------------------
@@ -80,32 +100,24 @@ public:
 	// Load new map
 	bool Load(const char* path);
 
+	// TODO 8: Create a method that translates x,y coordinates from map positions to world positions
+	iPoint MapToWorld(int x, int y) const;
+
 private:
 
-
 	bool LoadMap();
-	bool LoadTile();
-
+	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
+	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
+	// TODO 3: Create a method that loads a single laye
+	 bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
 
 public:
-struct TileSet;
-	
-	pugi::xml_document Map;
 
-	// TODO 1: Add your struct for map info as public for now
-
-	MapInfo info;
-	p2List<TileSet> tileset;
-	p2List<SDL_Texture*> tileset_texture;
-
+	MapData data;
 
 private:
 
 	pugi::xml_document	map_file;
-	
-
-	
-
 	p2SString			folder;
 	bool				map_loaded;
 };
